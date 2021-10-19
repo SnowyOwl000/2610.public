@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdlib>
+#include <random>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -12,24 +14,139 @@ void usage(char *name) {
     exit(1);
 }
 
-void keyGen() {
+bool isPrime(int64_t n) {
 
-    cout << "You have called keyGen()" << endl;
+    // if n < 2, it's not prime
+
+    // 2 is prime
+
+    // the other even numbers are not prime
+
+    // loop over odd integers 3 ... sqrt(n)
+    for (int64_t f=3;f*f<=n;f+=2)
+        // if it's a factor, n is not prime
+
+    // n is prime
+    return true;
+}
+
+//=============================================================
+// int64_t modInverse(int64_t a,int64_t n)
+//  calculate b such that (a * b) % n == 1
+//
+// Parameters
+// a - value to find the inverse of
+// n - the modulus
+//
+// returns
+// b such that (a * b) % n == 1
+//
+// see Wikipedia article on Extended Euclidean Algorithm
+// for more info
+//
+
+int64_t modInverse(int64_t a,int64_t n) {
+    int64_t
+        r=n,rNew=a,
+        t=0,tNew=1,
+        q,
+        tmp;
+
+    while (rNew != 0) {
+        q = r / rNew;
+
+        // (r,rNew) = (rNew,r-rNew*q)
+        tmp = rNew;
+        rNew = r - rNew * q;
+        r = tmp;
+
+        // (t,tNew) = (tNew,t-tNew*q)
+        tmp = tNew;
+        tNew = t - tNew * q;
+        t = tmp;
+    }
+
+    if (r != 1)
+        cout << "Error" << endl;
+
+    if (t < 0)
+        t += n;
+
+    return t;
+}
+
+int32_t getFileSize(char *fileName) {
+    struct stat
+        st{};
+
+    stat(fileName,&st);
+
+    return st.st_size;
+}
+
+int64_t modExp(int64_t base,int64_t exp,int64_t mod) {
+    int64_t
+        ans = 1;
+
+    while (exp != 0) {
+        if (exp % 2 == 1)
+            ans = (ans * base) % mod;
+
+        base = (base * base) % mod;
+
+        exp = exp / 2;
+    }
+
+    return ans;
+}
+
+void keyGen() {
+    random_device
+        rd;         // source of randomness
+    mt19937
+        mt(rd());   // random number generator
+    uniform_int_distribution<>
+        dis(4096,65535);           // the range we want
+    int64_t
+        p,q,
+        n,f,
+        d,e;
+
+    cout << "keyGen()" << endl;
+
+    // choose prime number p with 4096 <= p < 65536
+    do {
+        p = dis(mt);
+    } while (!isPrime(p));
+
+    // choose prime number q with 4096 <= q < 65536 and p != q
+
+    // calculate n = p * q
+
+    // calculate f = (p - 1) * (q - 1)
+
+    // choose e such that (a) 4096 <= e < 65536 and
+    // (b) gcd(e,f) == 1
+
+    // calculate d such that (d * e) % f == 1
+    d = modInverse(e,f);
+
+    // output
 }
 
 void encrypt(char *inFileName,char *outFileName,int64_t n,int64_t e) {
 
-    cout << "You have called encrypt()" << endl;
-    cout << "Input file: " << inFileName << endl;
-    cout << "Output file: " << outFileName << endl;
+    cout << "encrypt()" << endl;
+    cout << "Input: " << inFileName << endl;
+    cout << "Output: " << outFileName << endl;
     cout << "n: " << n << "   e: " << e << endl;
 }
 
 void decrypt(char *inFileName,char *outFileName,int64_t n,int64_t d) {
 
-    cout << "You have called decrypt()" << endl;
-    cout << "Input file: " << inFileName << endl;
-    cout << "Output file: " << outFileName << endl;
+    cout << "decrypt()" << endl;
+    cout << "Input: " << inFileName << endl;
+    cout << "Output: " << outFileName << endl;
     cout << "n: " << n << "   d: " << d << endl;
 }
 
@@ -37,58 +154,58 @@ int main(int argc,char *argv[]) {
     int64_t
         n,e,d;
 
-    // make sure we have at least two cmd-line parameters
+    // make sure there are at least two things on cmd line
 
     if (argc < 2)
         usage(argv[0]);
 
-    // in position 1, make sure first char is '-'
-
+    // second item first char must be -
     if (argv[1][0] != '-')
         usage(argv[0]);
 
-    // if position 1 second char is k, do key generation
+    // what's the second item second char?
+    switch (argv[1][1]) {
+        case 'k':
+            // key generation
 
-    if (argv[1][1] == 'k') {
-        // key generation
+            // only two things on cmd line
+            if (argc != 2)
+                usage(argv[0]);
 
-        // for key generation, only two things on cmd line
+            keyGen();
 
-        if (argc != 2)
+            break;
+        case 'e':
+            // encryption
+
+            // must have 6 things on cmd line
+            if (argc != 6)
+                usage(argv[0]);
+
+            // convert numbers to numeric form
+            n = atoi(argv[2]);
+            e = atoi(argv[3]);
+
+            encrypt(argv[4],argv[5],n,e);
+
+            break;
+        case 'd':
+            // decryption
+
+            // must have 6 things on cmd line
+            if (argc != 6)
+                usage(argv[0]);
+
+            // convert numbers to numeric form
+            n = atoi(argv[2]);
+            d = atoi(argv[3]);
+
+            decrypt(argv[4],argv[5],n,d);
+
+            break;
+        default:
             usage(argv[0]);
-
-        keyGen();
-
-    } else if (argv[1][1] == 'e') { // check for encryption
-        // encrypt
-
-        // make sure there are six things on cmd line
-
-        if (argc != 6)
-            usage(argv[0]);
-
-        // convert n and e to number form
-        n = atoi(argv[2]);
-        e = atoi(argv[3]);
-
-        encrypt(argv[4],argv[5],n,e);
-
-    } else if (argv[1][1] == 'd') { // check for decryption
-        // decrypt
-
-        // make sure there are six things on cmd line
-
-        if (argc != 6)
-            usage(argv[0]);
-
-        // convert n and e to number form
-        n = atoi(argv[2]);
-        d = atoi(argv[3]);
-
-        decrypt(argv[4],argv[5],n,d);
-
-    } else
-        usage(argv[0]);
+    }
 
     return 0;
 }
