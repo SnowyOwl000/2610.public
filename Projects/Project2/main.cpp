@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include <random>
 #include <sys/stat.h>
+#include <fstream>
+#include "codec64.h"
 
 using namespace std;
 
@@ -135,11 +137,61 @@ void keyGen() {
 }
 
 void encrypt(char *inFileName,char *outFileName,int64_t n,int64_t e) {
+    ifstream
+        inFile;
+    Codec64
+        codec;
+    uint32_t
+        fileSize,
+        plain,
+        cipher;
+    uint8_t
+        c1,c2,c3;
 
-    cout << "encrypt()" << endl;
-    cout << "Input: " << inFileName << endl;
-    cout << "Output: " << outFileName << endl;
-    cout << "n: " << n << "   e: " << e << endl;
+    // open input file... and make sure that worked
+    inFile.open(inFileName);
+
+    // 3 ways to verify:
+    // if (!inFile) ... open failed
+    // if (!inFile.is_open()) ... open failed
+    // if (inFile.fail()) ... open failed
+    if (!inFile) {
+        cout << "Error: Cannot open input file '"
+            << inFileName << "'" << endl;
+        return;
+    }
+
+    // use codec to open output and prepare for encoding
+    codec.beginEncode(outFileName);
+
+    // get file size, encode it and send to output
+    fileSize = getFileSize(inFileName);
+    codec.put32(fileSize);
+
+    // loop until all bytes read... for loop
+    for (uint32_t count=0;count<fileSize;count+=3) {
+
+        // read three bytes
+        c1 = inFile.get();
+        // read the other two bytes
+        c2 = inFile.get();
+        c3 = inFile.get();
+
+        // encrypt the three bytes
+        plain = c1 + 256 * c2 + 65536 * c3;
+        cipher = modExp(plain,e,n);
+
+        // feed encrypted value to codec
+        codec.put32(cipher);
+
+    // end of loop
+    }
+
+    // tell codec we're done
+    codec.endEncode();
+
+    // close input file
+    inFile.close();
 }
 
 void decrypt(char *inFileName,char *outFileName,int64_t n,int64_t d) {
@@ -148,6 +200,39 @@ void decrypt(char *inFileName,char *outFileName,int64_t n,int64_t d) {
     cout << "Input: " << inFileName << endl;
     cout << "Output: " << outFileName << endl;
     cout << "n: " << n << "   d: " << d << endl;
+
+    // open output file and verify
+
+    // tell codec to prepare for decoding
+
+    // get file size from codec
+
+    // loop until all bytes written back... use for loop
+
+        // get cipher from codec
+
+        // decrypt cipher
+
+        // split plain into c1, c2, c3
+        c1 = plain % 256;
+        plain /= 256;
+
+        c2 = plain % 256;
+        plain /= 256;
+
+        c3 = plain % 256;
+
+        // output c1
+
+        // maybe output c2
+
+        // maybe output c3
+
+    // end loop
+
+    // tell codec we're done
+
+    // close output file
 }
 
 int main(int argc,char *argv[]) {
