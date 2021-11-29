@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/Project4.dir/rns.cpp.o CMakeFiles/Project4.dir/main.cpp.o -o Project4 
