@@ -1,24 +1,17 @@
-
-# Consider dependencies only in project.
-set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
-
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
   "CXX"
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/bob/CLionProjects/Project4/main.cpp" "/home/bob/CLionProjects/Project4/cmake-build-debug/CMakeFiles/Project4.dir/main.cpp.o"
-  "/home/bob/CLionProjects/Project4/rns.cpp" "/home/bob/CLionProjects/Project4/cmake-build-debug/CMakeFiles/Project4.dir/rns.cpp.o"
+  "/home/u155/rwkramer/2610t/Project4/BigNumber.cpp" "/home/u155/rwkramer/2610t/Project4/cmake-build-debug/CMakeFiles/Project4.dir/BigNumber.cpp.o"
+  "/home/u155/rwkramer/2610t/Project4/main.cpp" "/home/u155/rwkramer/2610t/Project4/cmake-build-debug/CMakeFiles/Project4.dir/main.cpp.o"
+  "/home/u155/rwkramer/2610t/Project4/rns.cpp" "/home/u155/rwkramer/2610t/Project4/cmake-build-debug/CMakeFiles/Project4.dir/rns.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  )
-
-# The set of dependency files which are needed:
-set(CMAKE_DEPENDS_DEPENDENCY_FILES
   )
 
 # Targets to which this target links.

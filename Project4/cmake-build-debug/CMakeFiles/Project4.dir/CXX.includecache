@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/u155/rwkramer/2610t/Project4/BigNumber.cpp
+BigNumber.h
+/home/u155/rwkramer/2610t/Project4/BigNumber.h
+
+/home/u155/rwkramer/2610t/Project4/BigNumber.h
+cstdint
+-
+string
+-
+
